@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="39b1ffee-cbff-4046-bfdd-0d03274ac03c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="e06be63e-ede5-4cc1-98df-fc8e9645a10e" >
+		<db:oracle-connection host="localhost" user="mule4" password="mule4" instance="orcl" />
+	</db:config>
+	<flow name="oracle-app-sql-developerFlow" doc:id="81e5bf3d-f155-4311-860b-134c701772fa" >
+		<http:listener doc:name="Listener" doc:id="15970643-6a72-4fba-beed-b0dbb2089a03" config-ref="HTTP_Listener_config" path="insert"/>
+		<db:insert doc:name="Insert" doc:id="6ac66106-6479-4378-8cb6-5477eb9e0373" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into emp values(:no,:name,:sal)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	no: payload.no,
+	name: payload.name,
+	sal: payload.sal
+}]]]></db:input-parameters>
+		</db:insert>
+	</flow>
+</mule>
